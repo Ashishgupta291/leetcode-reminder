@@ -1,0 +1,92 @@
+<!-- leetcode_reminder_app/templates/index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LeetCode Reminder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f3f3;
+      padding: 30px;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      margin: 10px 0 5px;
+    }
+    input, select, button {
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 20px;
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .deactivate {
+      margin-top: 40px;
+      border-top: 1px solid #eee;
+      padding-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>LeetCode Daily Reminder</h2>
+    <form action="/activate" method="POST">
+      <label for="username">LeetCode Username:</label>
+      <input type="text" name="username" required>
+
+      <label for="email">Your Email Address:</label>
+      <input type="email" name="email" required>
+
+      <label for="alarm_time">Preferred Reminder Time:</label>
+      <input type="time" name="alarm_time" required>
+
+      <label for="timezone">Time Zone:</label>
+      <select name="timezone" required>
+        <option value="Asia/Kolkata">Asia/Kolkata (IST)</option>
+        <option value="UTC">UTC</option>
+        <option value="America/New_York">America/New_York (EST)</option>
+        <option value="Europe/London">Europe/London (GMT)</option>
+        <option value="Asia/Singapore">Asia/Singapore</option>
+        <!-- Add more if needed -->
+      </select>
+
+      <button type="submit">Activate Reminder</button>
+    </form>
+
+    <div class="deactivate">
+      <h3>Deactivate Reminder</h3>
+      <form action="/deactivate" method="POST">
+
+        <label for="email">Your Email Address:</label>
+        <input type="email" name="email" required>
+
+        <button type="submit">Deactivate Reminder</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
