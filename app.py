@@ -1,10 +1,7 @@
 from flask import Flask, render_template, request
 from email_utils import send_verification_email, generate_token
 from db import init_db, add_user, verify_user, get_user_by_token, deactivate_user, user_exists, get_existing_token
-from dotenv import load_dotenv
 import os
-
-load_dotenv()
 
 app = Flask(__name__)
 
