@@ -1,29 +1,35 @@
 # leetcode_reminder_app/db.py
+from dotenv import load_dotenv
+import psycopg2
+import os
+from datetime import datetime
+import pytz
+load_dotenv()
+DB_URL = os.getenv("DATABASE_URL")
 
-import sqlite3
+def get_connection():
+    return psycopg2.connect(DB_URL, sslmode='require')
 
-DB_PATH = "verify.db"
 
 def init_db():
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connection()
     c = conn.cursor()
     c.execute('''
         CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             username TEXT NOT NULL,
             email TEXT NOT NULL,
             alarm_time TEXT NOT NULL,
             timezone TEXT NOT NULL,
             token TEXT NOT NULL,
             alarm_time_utc TEXT,
-            verified INTEGER DEFAULT 0
+            verified INTEGER DEFAULT 0,
+            UNIQUE (email, username, alarm_time_utc)
         )
     ''')
     conn.commit()
     conn.close()
 
-from datetime import datetime
-import pytz
 
 def add_user(username, email, alarm_time, timezone, token):
     # Convert local alarm_time + timezone to UTC timestamp
@@ -36,54 +42,64 @@ def add_user(username, email, alarm_time, timezone, token):
     utc_time = localized_time.astimezone(pytz.utc)
     utc_str = utc_time.strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connection()
     c = conn.cursor()
-    c.execute("INSERT OR REPLACE INTO users (username, email, alarm_time, timezone, token, alarm_time_utc) VALUES (?, ?, ?, ?, ?, ?)",
-              (username, email, alarm_time, timezone, token, utc_str))
+    c.execute("""
+        INSERT INTO users (username, email, alarm_time, timezone, token, alarm_time_utc, verified)
+        VALUES (%s, %s, %s, %s, %s, %s, 0)
+        ON CONFLICT (email, username, alarm_time_utc) DO NOTHING
+    """, (username, email, alarm_time, timezone, token, utc_str))
     conn.commit()
     conn.close()
 
+
 def user_exists(email):
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connection()
     c = conn.cursor()
-    c.execute("SELECT * FROM users WHERE email = ?", (email,))
+    c.execute("SELECT 1 FROM users WHERE email = %s", (email,))
     result = c.fetchone()
     conn.close()
     return result is not None
 
+
 def get_user_by_token(token):
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connection()
     c = conn.cursor()
-    c.execute("SELECT * FROM users WHERE token = ?", (token,))
+    c.execute("SELECT * FROM users WHERE token = %s", (token,))
     result = c.fetchone()
     conn.close()
     return result
 
+
 def verify_user(token):
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connection()
     c = conn.cursor()
-    c.execute("UPDATE users SET verified = 1 WHERE token = ?", (token,))
+    c.execute("UPDATE users SET verified = 1 WHERE token = %s", (token,))
     conn.commit()
     conn.close()
+
 
 def deactivate_user(token):
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connection()
     c = conn.cursor()
-    c.execute("DELETE FROM users WHERE token = ?", (token,))
+    c.execute("DELETE FROM users WHERE token = %s", (token,))
     conn.commit()
     conn.close()
 
+
 def get_verified_users():
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connection()
     c = conn.cursor()
-    c.execute("SELECT username, email, alarm_time, timezone FROM users WHERE verified = 1")
+    c.execute("SELECT username, email, alarm_time, timezone, alarm_time_utc FROM users WHERE verified = 1")
     result = c.fetchall()
     conn.close()
     return result
+
+
 def get_existing_token(email):
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connection()
     c = conn.cursor()
-    c.execute("SELECT token FROM users WHERE email = ?", (email,))
+    c.execute("SELECT token FROM users WHERE email = %s", (email,))
     result = c.fetchone()
     conn.close()
-    return result[0]
+    return result[0] if result else None
