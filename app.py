@@ -2,7 +2,7 @@ from flask import Flask, render_template, request
 from email_utils import send_verification_email, generate_token
 from db import init_db, add_user, verify_user, get_user_by_token, deactivate_user, user_exists, get_existing_token
 import os
-
+init_db()
 app = Flask(__name__)
 
 @app.route("/")
@@ -54,5 +54,4 @@ def view_schedules():
     return "<br>".join([f"{u[0]} | {u[1]} | {u[2]} | {u[3]}" for u in users])
 
 if __name__ == "__main__":
-    init_db()
     app.run(debug=True)
