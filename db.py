@@ -1,10 +1,10 @@
 # leetcode_reminder_app/db.py
-from dotenv import load_dotenv
+
 import psycopg2
 import os
 from datetime import datetime
 import pytz
-load_dotenv()
+
 DB_URL = os.getenv("DATABASE_URL")
 
 def get_connection():
