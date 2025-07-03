@@ -14,7 +14,7 @@ SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 465
 
 # Replace with your hosted server domain if not running locally
-BASE_URL = ""https://leetcode-reminder-6ju2.onrender.com""
+BASE_URL = "https://leetcode-reminder-6ju2.onrender.com"
 
 def generate_token(email):
     return str(uuid.uuid4())
