@@ -38,7 +38,7 @@ def confirm_verification_token(token, max_age=3600):
 # ------------------- GOOGLE OAUTH -----------------------
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
-GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI", "http://localhost:5000/oauth2callback")
+GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI" )
 
 # --------------------------------------------------------
 import smtplib
@@ -404,6 +404,7 @@ def oauth2callback():
     conn.close()
 
     session['user_id'] = user_id
+    session['username'] = username
     session['email'] = email
     return redirect("/dashboard")
 
