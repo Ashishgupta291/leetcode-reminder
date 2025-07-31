@@ -386,7 +386,7 @@ def oauth2callback():
 
     email = user_info["email"]
     username = user_info.get("name", "")
-
+    print(email, username)
     # Ensure user exists in DB
     conn = get_connection()
     cur = conn.cursor()
