@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Leetcode Reminder</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f5f6fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .login-box {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .logo img {
+      height: 50px;
+      width: 50px;
+      margin-right: 10px;
+    }
+
+    .google-btn {
+      background-color: #4285f4;
+      color: white;
+    }
+
+    .google-btn:hover {
+      background-color: #357ae8;
+    }
+
+    .form-text a {
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="login-box">
+    <div class="logo">
+      <img src="/static/logo.png" alt="Logo" />
+      <h4 class="fw-bold mb-0">Leetcode Reminder</h4>
+    </div>
+
+    <form method="POST" action="/login">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <div class="mb-3">
+        <label for="email" class="form-label">Email address</label>
+        <input type="email" class="form-control" name="email" id="email" required />
+      </div>
+
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" name="password" id="password" required />
+      </div>
+
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-primary">Log In</button>
+        <a href="/auth/google" class="btn google-btn">Login with Google</a>
+      </div>
+    </form>
+
+    <div class="mt-3 text-center form-text">
+      <a href="/forgot_password">Forgot password?</a> |
+      <a href="/signup">Sign up</a>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
